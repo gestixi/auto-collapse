@@ -1,0 +1,26 @@
+{
+  "name": "auto-collapse",
+  "description": "jQuery plugin to automatically collapse menus",
+  "main": "auto-collapse.js",
+  "authors": [
+    "GestiXi <nicolas@gestixi.com> (https://www.gestixi.com)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "auto",
+    "collapse",
+    "menu",
+    "mobile",
+    "desktop",
+    "bootstrap"
+  ],
+  "homepage": "https://github.com/gestixi/auto-collapse",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
