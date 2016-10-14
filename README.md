@@ -49,6 +49,11 @@ Class to apply when the menu is collapsed.
 Selector to use to find dropdown links in the menu.
 
 
+### shouldCollapseDelegate *{function}*
+
+Delegate to determine if the menu should be collapsed.
+
+
 ### updateOnResize  *{boolean}*
 
 Set to false if you want to handle yourself when to check if the menu should be collapsed.

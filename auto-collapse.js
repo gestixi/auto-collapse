@@ -30,7 +30,7 @@
         if (options.updateOnResize) {
           $(window).resize(function(e) { data.scheduleUpdate(); });
         }
-      } 
+      }
 
       data.update();
     })
@@ -41,16 +41,29 @@
       Class to apply when the menu is not collapsed.
     */
     normalClass: 'navbar-normal',
-    
+
     /**
       Class to apply when the menu is collapsed.
     */
     responsiveClass: 'navbar-responsive',
-    
+
     /**
       Selector to use to find dropdown links in the menu.
     */
     dropdownLinkSelector: '.dropdown > a',
+
+    /**
+      Delegate to determine if the menu should be collapsed.
+    */
+    shouldCollapseDelegate: function($element) {
+      var $nav = $element.find('ul'),
+          navHeight = $nav.height(),
+          $navItem = $nav.find('li'),
+          navItemHeight = $navItem.outerHeight(true),
+          needCollapse = navHeight > navItemHeight;
+
+      return needCollapse;
+    },
 
     /**
       Set to false if you want to handle yourself when to check if
@@ -103,21 +116,18 @@
     update: function() {
       this._didScheduleUpdate = false;
       if (!this.needUpdate()) return;
-      
+
       var options = this.options,
         $element = this.$element,
         $clone = this.$clone;
 
       $clone.css({ display: 'block' });
 
-      var $nav = $clone.find('ul'),
-          navHeight = $nav.height(),
-          $navItem = $nav.find('li'),
-          navItemHeight = $navItem.outerHeight(true);
+      var collapse = options.shouldCollapseDelegate.call(this, $clone);
 
       $clone.css({ display: 'none' });
 
-      if (navHeight > navItemHeight) {
+      if (collapse) {
         this.makeResponsive();
       }
       else {
@@ -163,7 +173,7 @@
         if (!$.data(this, "hasDropDownData")) $(this).removeAttr('data-toggle');
       });
     },
-    
+
     /**
       Adjust the margin-left and right of navbar-collapse
     */
@@ -173,7 +183,7 @@
           options = this.options,
           $collapse = $element.find('.collapse'),
           initialMargin = this._initialMargin;
-          
+
       if (initialMargin == null) {
         initialMargin = this._initialMargin = {
           left: $collapse.css('margin-left'),
@@ -195,7 +205,7 @@
 
       $collapse.css({ 'margin-left': marginLeft, 'margin-right': marginRight });
     },
-    
+
     /**
       Determine if the scroll or the windows size has change
     */
@@ -215,7 +225,7 @@
       Schedule an update.
     */
     scheduleUpdate: function() {
-      if (this._didScheduleUpdate) return; 
+      if (this._didScheduleUpdate) return;
 
       if (window.requestAnimationFrame) {
         var that = this;
@@ -231,7 +241,3 @@
 
 
 }(window.jQuery);
-
-
-
-
