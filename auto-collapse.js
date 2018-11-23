@@ -56,12 +56,19 @@
       Delegate to determine if the menu should be collapsed.
     */
     shouldCollapseDelegate: function($element) {
-      var $nav = $element.find('ul'),
-          navHeight = $nav.height(),
-          $navItem = $nav.find('li'),
-          navItemHeight = $navItem.outerHeight(true),
-          needCollapse = navHeight > navItemHeight;
+      var that = this,
+        $nav = $element.find('ul'),
+        navHeight = $nav.height(),
+        $navItem = $nav.find('li'),
+        navItemHeight = $navItem.outerHeight(true),
+        needCollapse = navHeight > navItemHeight;
 
+      // If the case where the font is not loaded, update a few time during about 10 sec just in case.
+      if (!that.r) that.r = 0;
+      if (that.r < 9) {
+        setTimeout(function() { that.update() }, 50*that.r*that.r);
+        that.r++;
+      }
       return needCollapse;
     },
 
@@ -115,11 +122,10 @@
     */
     update: function() {
       this._didScheduleUpdate = false;
-      if (!this.needUpdate()) return;
 
       var options = this.options,
-        $element = this.$element,
-        $clone = this.$clone;
+        $clone = this.$clone,
+        didChange;
 
       $clone.css({ display: 'block' });
 
@@ -128,20 +134,20 @@
       $clone.css({ display: 'none' });
 
       if (collapse) {
-        this.makeResponsive();
+        didChange = this.makeResponsive();
       }
       else {
-        this.makeNormal();
+        didChange = this.makeNormal();
       }
 
-      this.updateMargin();
+      if (didChange) this.updateMargin();
     },
 
     /**
       Collapse the menu.
     */
     makeResponsive: function() {
-      if (this.isNormal === false) return;
+      if (this.isNormal === false) return false;
       this.isNormal = false;
 
       var options = this.options,
@@ -152,13 +158,14 @@
       this.$links.each(function() {
         $(this).attr('href', '#').addClass('dropdown-toggle').attr('data-toggle', 'dropdown');
       });
+      return true;
     },
 
     /**
       Uncollapse the menu.
     */
     makeNormal: function() {
-      if (this.isNormal === true) return;
+      if (this.isNormal === true) return false;
       this.isNormal = true;
 
       var $element = this.$element,
@@ -172,6 +179,7 @@
         if (!$.data(this, "hasDropDownClass")) $(this).removeClass('dropdown-toggle');
         if (!$.data(this, "hasDropDownData")) $(this).removeAttr('data-toggle');
       });
+      return true;
     },
 
     /**
@@ -204,19 +212,6 @@
       }
 
       $collapse.css({ 'margin-left': marginLeft, 'margin-right': marginRight });
-    },
-
-    /**
-      Determine if the scroll or the windows size has change
-    */
-    needUpdate: function() {
-      var hash = $(window).height() + ' ' + $(window).width() + ' ' + $(window).scrollTop();
-
-      if (this._lastUpdateHash !== hash) {
-        this._lastUpdateHash = hash;
-        return true;
-      }
-      return false;
     },
 
     /**
