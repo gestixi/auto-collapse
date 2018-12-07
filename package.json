@@ -1,6 +1,6 @@
 {
   "name": "auto-collapse",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "jQuery plugin to automatically collapse menus",
   "main": "auto-collapse.js",
   "scripts": {
